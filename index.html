@@ -1,13 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workshop GitHub</title>
+    <meta name="description" content="Uma introdução visual aos principais conceitos do GitHub para quem está começando.">
+    <title>GitHub sem mistério | Workshop COTI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --ink: #17221d;
+            --muted: #64716b;
+            --paper: #f5f7f1;
+            --card: #ffffff;
+            --line: #dce4dc;
+            --green: #1f8657;
+            --green-dark: #12563a;
+            --lime: #d5f36c;
+            --coral: #f37e62;
+            --yellow: #f5c85b;
+            --shadow: 0 18px 55px rgba(21, 49, 34, .09);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.5;
+        }
+        a { color: inherit; text-decoration: none; }
+        .container { width: min(1120px, calc(100% - 48px)); margin: auto; }
+        .mono { color: var(--green); font: 500 .77rem 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+
+        header {
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(220, 228, 220, .8);
+        }
+        .nav { align-items: center; display: flex; justify-content: space-between; }
+        .brand { align-items: center; display: flex; gap: 10px; font-weight: 700; }
+        .brand-mark {
+            align-items: center; background: var(--ink); border-radius: 10px; color: var(--lime);
+            display: flex; font-size: 1.1rem; height: 36px; justify-content: center; width: 36px;
+        }
+        .nav-links { align-items: center; display: flex; gap: 30px; font-size: .9rem; }
+        .nav-links a { color: var(--muted); transition: color .2s; }
+        .nav-links a:hover { color: var(--green); }
+        .nav-cta { background: var(--ink); border-radius: 99px; color: white !important; padding: 11px 18px; }
+        .menu-toggle { background: none; border: 0; color: var(--ink); display: none; font-size: 1.4rem; }
+
+        .hero { overflow: hidden; padding: 102px 0 92px; position: relative; }
+        .hero::after { border: 1px solid var(--line); border-radius: 50%; content: ''; height: 520px; position: absolute; right: -180px; top: -90px; width: 520px; z-index: -1; }
+        .hero-grid { align-items: center; display: grid; gap: 70px; grid-template-columns: 1.05fr .95fr; }
+        h1 { font-size: clamp(3.4rem, 7vw, 6.4rem); letter-spacing: -.075em; line-height: .94; margin: 20px 0 26px; max-width: 700px; }
+        h1 em { color: var(--green); font-style: normal; }
+        .hero-copy { color: var(--muted); font-size: 1.1rem; max-width: 500px; }
+        .hero-actions { align-items: center; display: flex; gap: 17px; margin-top: 36px; }
+        .button { align-items: center; border: 1px solid var(--ink); border-radius: 99px; display: inline-flex; font-size: .9rem; font-weight: 600; gap: 10px; padding: 14px 21px; transition: transform .2s, box-shadow .2s; }
+        .button:hover { box-shadow: 0 8px 20px rgba(21, 49, 34, .13); transform: translateY(-3px); }
+        .button-primary { background: var(--green); border-color: var(--green); color: white; }
+        .button-link { border: 0; color: var(--green-dark); padding-left: 0; }
+
+        .terminal { background: var(--ink); border-radius: 14px; box-shadow: var(--shadow); color: #e7f1e6; overflow: hidden; transform: rotate(2deg); }
+        .terminal-top { align-items: center; background: #25352c; display: flex; gap: 7px; padding: 15px 18px; }
+        .dot { background: #f37e62; border-radius: 50%; height: 8px; width: 8px; }
+        .dot:nth-child(2) { background: var(--yellow); } .dot:nth-child(3) { background: var(--lime); }
+        .terminal-title { color: #99aa9d; font: .72rem 'DM Mono', monospace; margin-left: 8px; }
+        pre { font: .82rem/2 'DM Mono', monospace; margin: 0; padding: 30px 28px 34px; }
+        .prompt { color: var(--lime); } .command { color: #f8f8f1; } .comment { color: #7c9183; }
+
+        section { padding: 92px 0; }
+        .section-heading { align-items: end; display: flex; justify-content: space-between; margin-bottom: 38px; }
+        h2 { font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.055em; line-height: 1; margin: 12px 0 0; max-width: 570px; }
+        .section-intro { color: var(--muted); max-width: 300px; }
+        .concepts { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
+        .concept { background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-height: 260px; padding: 25px; transition: transform .25s, box-shadow .25s; }
+        .concept:hover { box-shadow: var(--shadow); transform: translateY(-6px); }
+        .concept-number { color: var(--coral); font: 500 .8rem 'DM Mono', monospace; }
+        .concept-icon { font-size: 2rem; margin: 34px 0 17px; }
+        .concept h3 { font-size: 1.3rem; margin: 0 0 8px; }
+        .concept p { color: var(--muted); font-size: .92rem; margin: 0; }
+
+        .flow-section { background: var(--green-dark); color: white; }
+        .flow-section .mono { color: var(--lime); }
+        .flow-section .section-intro { color: #b4c8bc; }
+        .flow { display: grid; grid-template-columns: repeat(4, 1fr); position: relative; }
+        .flow::before { background: #5c8c6d; content: ''; height: 1px; left: 5%; position: absolute; right: 5%; top: 31px; }
+        .flow-step { position: relative; }
+        .flow-badge { align-items: center; background: var(--lime); border: 7px solid var(--green-dark); border-radius: 50%; color: var(--ink); display: flex; font: 500 .85rem 'DM Mono', monospace; height: 62px; justify-content: center; position: relative; width: 62px; z-index: 1; }
+        .flow-step h3 { font-size: 1.15rem; margin: 22px 0 8px; } .flow-step p { color: #b4c8bc; font-size: .9rem; max-width: 190px; }
+
+        .pr-section { background: #e9eee7; }
+        .pr-layout { align-items: center; display: grid; gap: 80px; grid-template-columns: .8fr 1.2fr; }
+        .pr-layout p { color: var(--muted); max-width: 390px; }
+        .pr-card { background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 25px; }
+        .pr-head { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 13px; padding-bottom: 18px; }
+        .avatar { align-items: center; background: var(--coral); border-radius: 50%; color: white; display: flex; font-weight: 700; height: 36px; justify-content: center; width: 36px; }
+        .pr-meta { font-size: .86rem; } .pr-meta small { color: var(--muted); display: block; }
+        .pr-content { padding: 20px 0 5px; } .pr-content h3 { margin: 0 0 9px; } .pr-content p { font-size: .88rem; margin: 0 0 19px; }
+        .tags { display: flex; gap: 8px; } .tag { background: #e4f5ba; border-radius: 99px; color: var(--green-dark); font: .7rem 'DM Mono', monospace; padding: 5px 9px; }
+
+        .cta { padding: 105px 0; text-align: center; }
+        .cta h2 { margin: 14px auto 22px; } .cta p { color: var(--muted); margin: auto; max-width: 460px; }
+        footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; padding: 25px 0; }
+        .footer-inner { display: flex; justify-content: space-between; }
+
+        @media (max-width: 760px) {
+            .container { width: min(100% - 32px, 560px); }
+            header { padding: 17px 0; } .menu-toggle { display: block; }
+            .nav { flex-wrap: wrap; }
+            .nav-links { background: var(--paper); border-bottom: 1px solid var(--line); display: none; flex-basis: 100%; flex-direction: column; gap: 18px; padding: 24px 0 8px; }
+            .nav-links.open { display: flex; } .nav-cta { width: 100%; text-align: center; }
+            .hero { padding: 70px 0 65px; } .hero-grid, .pr-layout { gap: 42px; grid-template-columns: 1fr; }
+            h1 { font-size: clamp(3.2rem, 17vw, 5rem); } .hero-copy { font-size: 1rem; }
+            .terminal { transform: none; } pre { font-size: .72rem; padding: 24px 18px; }
+            section { padding: 66px 0; } .section-heading { align-items: start; flex-direction: column; gap: 16px; } .concepts { grid-template-columns: 1fr; }
+            .concept { min-height: auto; } .concept-icon { margin: 22px 0 12px; }
+            .flow { gap: 26px; grid-template-columns: 1fr 1fr; } .flow::before { display: none; }
+            .flow-step p { margin-bottom: 0; } .pr-layout { gap: 25px; } .cta { padding: 75px 0; }
+            .footer-inner { align-items: start; flex-direction: column; gap: 7px; }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <nav class="container nav" aria-label="Navegação principal">
+            <a class="brand" href="#inicio"><span class="brand-mark">◒</span><span>git / sem mistério</span></a>
+            <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+            <div class="nav-links">
+                <a href="#conceitos">Conceitos</a>
+                <a href="#fluxo">Fluxo de trabalho</a>
+                <a class="nav-cta" href="#comecar">Começar agora ↗</a>
+            </div>
+        </nav>
+    </header>
 
-    <h2>Workshop - GitHub COTI Informática</h2>
-    
+    <main>
+        <section class="hero" id="inicio">
+            <div class="container hero-grid">
+                <div>
+                    <span class="mono">Workshop COTI / 01</span>
+                    <h1>Seu código.<br><em>Em movimento.</em></h1>
+                    <p class="hero-copy">GitHub é onde ideias viram projetos compartilhados. Entenda a lógica por trás das ferramentas e colabore com muito mais confiança.</p>
+                    <div class="hero-actions"><a class="button button-primary" href="#conceitos">Explorar conceitos <span>↓</span></a><a class="button button-link" href="#fluxo">Ver o fluxo →</a></div>
+                </div>
+                <div class="terminal" aria-label="Exemplo de comandos Git">
+                    <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-title">projeto-github ~ main</span></div>
+                    <pre><span class="comment"># comece uma nova história</span>
+<span class="prompt">$</span> <span class="command">git init</span>
+<span class="comment"># registre sua primeira ideia</span>
+<span class="prompt">$</span> <span class="command">git add .</span>
+<span class="prompt">$</span> <span class="command">git commit -m "first commit"</span>
+<span class="comment"># compartilhe com o mundo</span>
+<span class="prompt">$</span> <span class="command">git push origin main</span></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="conceitos">
+            <div class="container">
+                <div class="section-heading"><div><span class="mono">O vocabulário</span><h2>As peças do jogo.</h2></div><p class="section-intro">Seis ideias simples formam a base de quase todo projeto no GitHub.</p></div>
+                <div class="concepts">
+                    <article class="concept"><span class="concept-number">01 / 06</span><div class="concept-icon">◈</div><h3>Repositório</h3><p>A casa do seu projeto: código, arquivos, histórico e tudo que a equipe precisa para construir junto.</p></article>
+                    <article class="concept"><span class="concept-number">02 / 06</span><div class="concept-icon">◌</div><h3>Commit</h3><p>Um ponto salvo na história. Cada commit registra uma mudança com contexto e uma mensagem clara.</p></article>
+                    <article class="concept"><span class="concept-number">03 / 06</span><div class="concept-icon">⑂</div><h3>Branch</h3><p>Uma linha de trabalho independente para experimentar, corrigir ou desenvolver sem quebrar o principal.</p></article>
+                    <article class="concept"><span class="concept-number">04 / 06</span><div class="concept-icon">↗</div><h3>Pull Request</h3><p>O convite para revisar e integrar suas mudanças. Conversa, feedback e qualidade antes do merge.</p></article>
+                    <article class="concept"><span class="concept-number">05 / 06</span><div class="concept-icon">✓</div><h3>Issue</h3><p>Um espaço para organizar tarefas, bugs e ideias, transformando conversa em trabalho visível.</p></article>
+                    <article class="concept"><span class="concept-number">06 / 06</span><div class="concept-icon">●</div><h3>Clone &amp; Push</h3><p>Clone traz o repositório para sua máquina. Push envia suas novas versões de volta para a nuvem.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="flow-section" id="fluxo">
+            <div class="container"><div class="section-heading"><div><span class="mono">O ritual diário</span><h2>Do primeiro arquivo ao merge.</h2></div><p class="section-intro">Um fluxo previsível deixa a colaboração leve e o histórico compreensível.</p></div>
+                <div class="flow"><div class="flow-step"><div class="flow-badge">01</div><h3>Crie uma branch</h3><p>Separe sua ideia do código estável.</p></div><div class="flow-step"><div class="flow-badge">02</div><h3>Faça commits</h3><p>Registre pequenas mudanças com intenção.</p></div><div class="flow-step"><div class="flow-badge">03</div><h3>Abra um PR</h3><p>Peça revisão e compartilhe o contexto.</p></div><div class="flow-step"><div class="flow-badge">04</div><h3>Faça o merge</h3><p>Integre a solução ao projeto principal.</p></div></div>
+            </div>
+        </section>
+
+        <section class="pr-section">
+            <div class="container pr-layout"><div><span class="mono">Colaboração real</span><h2>O melhor código também é uma boa conversa.</h2><p>Um Pull Request não é só um botão. É o lugar onde a equipe explica decisões, aprende em conjunto e entrega algo mais forte.</p><a class="button button-link" href="#comecar">Entender PRs ↗</a></div><div class="pr-card"><div class="pr-head"><div class="avatar">FL</div><div class="pr-meta"><strong>Felipe abriu um Pull Request</strong><small>feat: adiciona página inicial · há 4 min</small></div></div><div class="pr-content"><h3>Uma home mais clara para quem está começando</h3><p>Esta mudança apresenta o fluxo de colaboração com exemplos simples. Podem revisar a hierarquia e a responsividade?</p><div class="tags"><span class="tag">enhancement</span><span class="tag">design</span></div></div></div></div>
+        </section>
+
+        <section class="cta" id="comecar"><div class="container"><span class="mono">Agora é com você</span><h2>Abra espaço para a próxima ideia.</h2><p>Crie um repositório, convide alguém para colaborar e comece a construir em público.</p><div class="hero-actions" style="justify-content:center"><a class="button button-primary" href="https://github.com/new" target="_blank" rel="noreferrer">Criar repositório ↗</a></div></div></section>
+    </main>
+
+    <footer><div class="container footer-inner"><span>Git / sem mistério — Workshop COTI</span><span>Feito para aprender, compartilhar e evoluir.</span></div></footer>
+    <script>
+        const menuButton = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuButton.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            menuButton.setAttribute('aria-expanded', isOpen);
+        });
+        navLinks.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            menuButton.setAttribute('aria-expanded', 'false');
+        }));
+    </script>
 </body>
 </html>
